@@ -1,0 +1,14 @@
+{
+  "name": "piplayer.server",
+  "version": "1.0.0",
+  "description": "Node.js server that servs MP3 files for a web player",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Kamil Korczak",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
