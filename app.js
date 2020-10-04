@@ -1,8 +1,15 @@
+// Imports
 const express = require('express');
+const http = require('http');
+const websocket = require('ws');
 const { getDirectoryContent, isPathExists } = require('./folderOperations');
-const app = express();
 
+// Server init
+const app = express();
 app.use(express.json());
+const server = http.createServer(app);
+
+const wsServer = new websocket.Server({ server: server, path: '/ws' });
 
 const folderWithMusic = '/var/www/music/';
 
@@ -29,4 +36,12 @@ app.get('/getFolderContent', (req, res) => {
     res.send(folcerContent);
 });
 
-app.listen(8080);
+wsServer.on('connection', function connection(ws) {
+    console.log('Web socket connection opened...');
+
+    ws.on('message', function message(text) {
+        console.log(text);
+    });
+});
+
+server.listen(8080);
