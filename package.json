@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.1",
+    "mplayer": "github:noodny/mplayer",
     "ws": "^7.3.1"
   }
 }

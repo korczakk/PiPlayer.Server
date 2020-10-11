@@ -2,7 +2,7 @@
 const express = require('express');
 const http = require('http');
 const websocket = require('ws');
-const { getFolderContentEndpoints } = require('./endpoints/folderContentEndpoints')
+const { getFolderContentEndpoints } = require('./endpoints/folderContentEndpoints');
 const { getWebSocketEndpoints } = require('./endpoints/webSocketEndpoints')
 
 // Server init
