@@ -1,5 +1,23 @@
+'use strict';
+
 const MPlayer = require('mplayer');
 const mplayer = new MPlayer();
+
+let playerState = {
+    state: 'NotRunning',
+    fileName: '',
+    duration: 0,
+    title: '',
+    previousState: ''
+};
+
+const possibleStates = {
+    Started: 'Started',
+    Stoped: 'Stoped',
+    Paused: 'Paused',
+    Playing: 'Playing',
+    Starting: 'Starting'
+};
 
 module.exports.getWebSocketEndpoints = (wsServer) => {
     wsServer.on('connection', function connection(ws) {
@@ -15,28 +33,29 @@ module.exports.getWebSocketEndpoints = (wsServer) => {
                         cache: 128,
                         cacheMin: 1
                     });
+                    setRequestedState(possibleStates.Starting);
                     break;
                 case "openPlaylist":
-                    mplayer.openPlaylist(messageContent.parameter, { pt_step: 3 });
+                    mplayer.openPlaylist(messageContent.parameter);
+                    setRequestedState(possibleStates.Starting);
                     break;
-
                 case "play":
                     mplayer.play();
+                    setRequestedState(possibleStates.Playing);
                     break;
                 case "stop":
                     mplayer.stop();
+                    setRequestedState(possibleStates.Stopped);
                     break;
                 case "pause":
                     mplayer.pause();
+                    setRequestedState(possibleStates.Paused);
                     break;
                 case "next":
                     mplayer.next();
                     break;
                 case "previous":
                     mplayer.previous();
-                    break;
-                case "goto":
-                    mplayer.goto(messageContent.position);
                     break;
             }
         });
@@ -46,42 +65,76 @@ module.exports.getWebSocketEndpoints = (wsServer) => {
             // ws.send(t);
         })
         mplayer.on("status", (status) => {
-            const json = JSON.stringify(status);
+            playerState = { ...playerState, fileName: status.filename };
+            const json = JSON.stringify(playerState);
             ws.send(json);
         })
         mplayer.on("start", () => {
-            const state = JSON.stringify(createStateObject('Started'));
-            ws.send(state);
+            const newState = createState(possibleStates.Started);
+            if(newState === null)
+            {
+                return;
+            }
+            playerState = { ...playerState, state: newState };
+            setRequestedState(possibleStates.Started);
+            const json = JSON.stringify(playerState);
+            ws.send(json);
         })
         mplayer.on("stop", () => {
-            const state = JSON.stringify(createStateObject('Stoped'));
-            ws.send(state);
+            const newState = createState('Stoped');
+            if(newState === null)
+            {
+                return;
+            }
+            playerState = { ...playerState, state: newState };
+            const json = JSON.stringify(playerState);
+            ws.send(json);
         })
         mplayer.on("play", () => {
-            const state = JSON.stringify(createStateObject('Playing'));
-            ws.send(state);
+            const newState = createState('Playing');
+            if(newState === null)
+            {
+                return;
+            }
+            playerState = { ...playerState, state:  newState };
+            const json = JSON.stringify(playerState);
+            ws.send(json);
         })
         mplayer.on("pause", () => {
-            const state = JSON.stringify(createStateObject('Paused'));
-            ws.send(state);
+            const newState = createState('Paused');
+            if(newState === null)
+            {
+                return;
+            }
+            playerState = { ...playerState, state: newState };
+            const json = JSON.stringify(playerState);
+            ws.send(json);
         })
 
     });
 }
 
-function createStateObject(state) {
-    const possibleStates = [
-        'Started',
-        'Stoped',
-        'Paused',
-        'Resumed'
-    ];
-
-    if (!possibleStates.some(x => x === state)) {
-        return '';
+function createState(newState) {
+    if (possibleStates[newState] === null) {
+        return null;
     }
 
-    return {
-        'state': state
-    };
+    // newState comes from MPlayer, not from client and for some reasone MPlayer emits too many events without user's interaction.
+    // That is why I check what state has been set by client to avoid sending wrong state over WS.
+    if(stateSetByClient.state === possibleStates.Playing && newState === possibleStates.Paused)
+    {
+        return null;
+    }
+
+    return newState;
+}
+
+function setRequestedState(newState) {
+    // Sets state based on client's request
+
+    if (possibleStates[newState] === null) {
+        throw Error('Try to set an unknown state.');
+    }
+
+    stateSetByClient = { state: newState };
 }
