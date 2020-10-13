@@ -67,7 +67,7 @@ module.exports.getWebSocketEndpoints = (wsServer) => {
 
         // Events
         mplayer.on("time", (t) => {
-            // ws.send(t);
+            ws.send(JSON.stringify({time: t}));
         })
         mplayer.on("status", (status) => {
             playerState = { ...playerState, fileName: status.filename };
@@ -99,6 +99,5 @@ module.exports.getWebSocketEndpoints = (wsServer) => {
             const json = JSON.stringify(playerState);
             ws.send(json);
         })
-
     });
 }
