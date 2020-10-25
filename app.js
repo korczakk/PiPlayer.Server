@@ -2,11 +2,15 @@
 const express = require('express');
 const http = require('http');
 const websocket = require('ws');
+const cors = require('cors');
 const { getFolderContentEndpoints } = require('./endpoints/folderContentEndpoints');
 const { getWebSocketEndpoints } = require('./endpoints/webSocketEndpoints')
 
 // Server init
 const app = express();
+app.use(cors({
+    origin: 'http://localhost:4200'
+}));
 app.use(express.json());
 const server = http.createServer(app);
 const wsServer = new websocket.Server({ server: server, path: '/ws' });

@@ -9,6 +9,7 @@
   "author": "Kamil Korczak",
   "license": "ISC",
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^4.17.1",
     "mplayer": "github:noodny/mplayer",
     "ws": "^7.3.1"
