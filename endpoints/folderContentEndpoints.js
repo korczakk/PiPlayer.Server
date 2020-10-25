@@ -18,7 +18,16 @@ module.exports.getFolderContentEndpoints = (app) => {
             return;
         }
     
-        const folcerContent = getDirectoryContent(fullPath);
+        const folcerContent = getDirectoryContent(fullPath).sort((a, b) => sortFolders(a, b));
         res.send(folcerContent);
     });    
+}
+
+function sortFolders(a, b) {
+    if(a.isFolder && !b.isFolder) {
+        return -1;
+    }
+    if(!a.isFolder && b.isFolder) {
+        return 1;
+    }
 }
