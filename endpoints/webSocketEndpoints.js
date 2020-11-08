@@ -34,7 +34,7 @@ module.exports.getWebSocketEndpoints = (wsServer) => {
                     ws.send(JSON.stringify(playerState));
                     mplayer.openFile(messageContent.parameter, {
                         cache: 128,
-                        cacheMin: 1
+                        cacheMin: 2
                     });
                     break;
                 case "openPlaylist":
