@@ -30,7 +30,7 @@ module.exports.getWebSocketEndpoints = (wsServer) => {
             // Commands
             switch (messageContent.command) {
                 case "openFile":
-                    playerState = { ...playerState, state: possibleStates.Starting };
+                    playerState = { ...playerState, state: possibleStates.Starting, requestedState: possibleStates.Starting };
                     ws.send(JSON.stringify(playerState));
                     mplayer.openFile(messageContent.parameter, {
                         cache: 128,
@@ -38,7 +38,7 @@ module.exports.getWebSocketEndpoints = (wsServer) => {
                     });
                     break;
                 case "openPlaylist":
-                    playerState = { ...playerState, state: possibleStates.Starting };
+                    playerState = { ...playerState, state: possibleStates.Starting, requestedState: possibleStates.Starting };
                     ws.send(JSON.stringify(playerState));
                     mplayer.openPlaylist(messageContent.parameter);
                     break;
@@ -75,13 +75,13 @@ module.exports.getWebSocketEndpoints = (wsServer) => {
             playerState = { ...playerState, fileName: status.filename };
         })
         mplayer.on("start", () => {
-            playerState = { ...playerState, state: possibleStates.Started, requestedState: possibleStates.Started };
+            playerState = { ...playerState, state: possibleStates.Started };
             const json = JSON.stringify(playerState);
             ws.send(json);
         })
         mplayer.on("stop", () => {
-  
-            playerState = { ...playerState, state: possibleStates.Stoped, requestedState: possibleStates.Stoped };
+
+            playerState = { ...playerState, state: possibleStates.Stoped };
             const json = JSON.stringify(playerState);
             ws.send(json);
         })
@@ -89,7 +89,7 @@ module.exports.getWebSocketEndpoints = (wsServer) => {
             if (playerState.state === possibleStates.Playing) {
                 return;
             }
-            playerState = { ...playerState, state: possibleStates.Playing, requestedState: possibleStates.Playing };
+            playerState = { ...playerState, state: possibleStates.Playing };
             const json = JSON.stringify(playerState);
             ws.send(json);
         })
@@ -97,7 +97,7 @@ module.exports.getWebSocketEndpoints = (wsServer) => {
             if (playerState.requestedState === playerState.state) {
                 return;
             }
-            playerState = { ...playerState, state: possibleStates.Paused, requestedState: possibleStates.Paused };
+            playerState = { ...playerState, state: possibleStates.Paused };
             const json = JSON.stringify(playerState);
             ws.send(json);
         })
