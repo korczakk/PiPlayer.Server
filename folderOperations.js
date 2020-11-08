@@ -5,13 +5,22 @@ function getDirectoryContent(path) {
     const dir = fs.readdirSync(path, { withFileTypes: true});
 
     const dirContent = dir.map(d => {
-        return { name: d.name, isFolder: d.isDirectory() };
+        return { name: d.name, isFolder: d.isDirectory(), path: path };
      });
-    return dirContent;    
+    return dirContent.sort((a, b) => sortFolders(a, b));
 }
 
 function isPathExists(path) {
     return fs.existsSync(path);
+}
+
+function sortFolders(a, b) {
+    if(a.isFolder && !b.isFolder) {
+        return -1;
+    }
+    if(!a.isFolder && b.isFolder) {
+        return 1;
+    }
 }
 
 exports.getDirectoryContent = getDirectoryContent;

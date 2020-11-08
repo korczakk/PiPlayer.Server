@@ -4,7 +4,7 @@ const MPlayer = require('mplayer');
 const mplayer = new MPlayer();
 
 let playerState = {
-    state: 'NotRunning',
+    state: 'WaitingForCommand',
     fileName: '',
     duration: 0,
     title: '',
@@ -16,7 +16,8 @@ const possibleStates = {
     Stoped: 'Stoped',
     Paused: 'Paused',
     Playing: 'Playing',
-    Starting: 'Starting'
+    Starting: 'Starting',
+    WaitingForCommand: 'WaitingForCommand'
 };
 
 module.exports.getWebSocketEndpoints = (wsServer) => {
@@ -67,7 +68,8 @@ module.exports.getWebSocketEndpoints = (wsServer) => {
 
         // Events
         mplayer.on("time", (t) => {
-            ws.send(JSON.stringify({time: t}));
+            // This will send timing after every 30 ms. Right now not used.
+            // ws.send(JSON.stringify({time: t}));
         })
         mplayer.on("status", (status) => {
             playerState = { ...playerState, fileName: status.filename };
@@ -78,7 +80,7 @@ module.exports.getWebSocketEndpoints = (wsServer) => {
             ws.send(json);
         })
         mplayer.on("stop", () => {
-
+  
             playerState = { ...playerState, state: possibleStates.Stoped, requestedState: possibleStates.Stoped };
             const json = JSON.stringify(playerState);
             ws.send(json);

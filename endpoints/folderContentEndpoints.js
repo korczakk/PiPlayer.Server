@@ -18,16 +18,16 @@ module.exports.getFolderContentEndpoints = (app) => {
             return;
         }
     
-        const folcerContent = getDirectoryContent(fullPath).sort((a, b) => sortFolders(a, b));
+        const folcerContent = getDirectoryContent(fullPath);
         res.send(folcerContent);
-    });    
-}
+    });
 
-function sortFolders(a, b) {
-    if(a.isFolder && !b.isFolder) {
-        return -1;
-    }
-    if(!a.isFolder && b.isFolder) {
-        return 1;
-    }
+    app.get("/netRadioStations", (req, res) => {
+        const radioStations = [
+            { name: 'Calm Radio - Opera', isFolder: false, radioUrl: 'http://streams.calmradio.com:1128/stream' },
+            { name:'Calm Radio - Christmass', isFolder: false, radioUrl: 'http://streams.calmradio.com:1428/stream' }
+        ];
+
+        res.send(radioStations);
+    });
 }
