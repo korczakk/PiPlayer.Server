@@ -1,0 +1,14 @@
+[Unit]
+Description=PiPlayer server
+After=network.target
+
+[Service]
+ExecStart=node /home/pi/PiPlayer.Server/app.js
+WorkingDirectory=/home/pi/PiPlayer.Server
+StandardOutput=inherit
+StandardError=inherit
+Restart=always
+User=pi
+
+[Install]
+WantedBy=multi-user.target
