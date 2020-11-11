@@ -24,6 +24,8 @@ module.exports.getWebSocketEndpoints = (wsServer) => {
     wsServer.on('connection', function connection(ws) {
         console.log('Web socket connection opened...');
 
+        sendStatus(ws, playerState);
+
         ws.on('message', function message(msg) {
             const messageContent = JSON.parse(msg);
 
@@ -31,7 +33,7 @@ module.exports.getWebSocketEndpoints = (wsServer) => {
             switch (messageContent.command) {
                 case "openFile":
                     playerState = { ...playerState, state: possibleStates.Starting, requestedState: possibleStates.Starting };
-                    ws.send(JSON.stringify(playerState));
+                    sendStatus(ws, playerState);
                     mplayer.openFile(messageContent.parameter, {
                         cache: 128,
                         cacheMin: 2
@@ -39,7 +41,7 @@ module.exports.getWebSocketEndpoints = (wsServer) => {
                     break;
                 case "openPlaylist":
                     playerState = { ...playerState, state: possibleStates.Starting, requestedState: possibleStates.Starting };
-                    ws.send(JSON.stringify(playerState));
+                    sendStatus(ws, playerState);
                     mplayer.openPlaylist(messageContent.parameter);
                     break;
                 case "play":
@@ -64,8 +66,7 @@ module.exports.getWebSocketEndpoints = (wsServer) => {
                     mplayer.previous();
                     break;
                 case "checkState":
-                    const json = JSON.stringify(playerState);
-                    ws.send(json);
+                    sendStatus(ws, playerState);
                     break;
             }
         });
@@ -80,30 +81,31 @@ module.exports.getWebSocketEndpoints = (wsServer) => {
         })
         mplayer.on("start", () => {
             playerState = { ...playerState, state: possibleStates.Started };
-            const json = JSON.stringify(playerState);
-            ws.send(json);
+            sendStatus(ws, playerState);
         })
         mplayer.on("stop", () => {
 
             playerState = { ...playerState, state: possibleStates.Stoped };
-            const json = JSON.stringify(playerState);
-            ws.send(json);
+            sendStatus(ws, playerState);
         })
         mplayer.on("play", () => {
             // if (playerState.state === possibleStates.Playing) {
             //     return;
             // }
             playerState = { ...playerState, state: possibleStates.Playing };
-            const json = JSON.stringify(playerState);
-            ws.send(json);
+            sendStatus(ws, playerState);
         })
         mplayer.on("pause", () => {
             // if (playerState.requestedState === playerState.state) {
             //     return;
             // }
             playerState = { ...playerState, state: possibleStates.Paused };
-            const json = JSON.stringify(playerState);
-            ws.send(json);
+            sendStatus(ws, playerState);
         })
     });
+}
+
+function sendStatus(ws, playerState) {
+    const json = JSON.stringify(playerState);
+        ws.send(json);
 }
