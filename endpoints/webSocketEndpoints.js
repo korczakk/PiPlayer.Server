@@ -63,6 +63,10 @@ module.exports.getWebSocketEndpoints = (wsServer) => {
                 case "previous":
                     mplayer.previous();
                     break;
+                case "checkState":
+                    const json = JSON.stringify(playerState);
+                    ws.send(json);
+                    break;
             }
         });
 
@@ -86,17 +90,17 @@ module.exports.getWebSocketEndpoints = (wsServer) => {
             ws.send(json);
         })
         mplayer.on("play", () => {
-            if (playerState.state === possibleStates.Playing) {
-                return;
-            }
+            // if (playerState.state === possibleStates.Playing) {
+            //     return;
+            // }
             playerState = { ...playerState, state: possibleStates.Playing };
             const json = JSON.stringify(playerState);
             ws.send(json);
         })
         mplayer.on("pause", () => {
-            if (playerState.requestedState === playerState.state) {
-                return;
-            }
+            // if (playerState.requestedState === playerState.state) {
+            //     return;
+            // }
             playerState = { ...playerState, state: possibleStates.Paused };
             const json = JSON.stringify(playerState);
             ws.send(json);

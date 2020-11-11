@@ -9,7 +9,7 @@ const { getWebSocketEndpoints } = require('./endpoints/webSocketEndpoints')
 // Server init
 const app = express();
 app.use(cors({
-    origin: 'http://localhost:4200'
+    origin: ['http://localhost:4200', 'http://192.168.1.92']
 }));
 app.use(express.json());
 const server = http.createServer(app);

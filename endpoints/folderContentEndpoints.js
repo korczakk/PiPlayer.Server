@@ -1,7 +1,7 @@
 const { getDirectoryContent, isPathExists } = require('../folderOperations');
 
-const folderWithMusic = '/var/www/music/';
-// const folderWithMusic = './';
+const folderWithMusic = '/home/pi/Music/';
+//  const folderWithMusic = './';
 
 module.exports.getFolderContentEndpoints = (app) => {
     app.get('/getFolderContent/:folderName?', (req, res) => {

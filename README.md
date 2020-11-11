@@ -1,4 +1,5 @@
 # About PiPlayer.Server
+This is a simple node.js server which can play music from different sources using MPlayer (it has to be installed first). It can play music from MP3 files (it reads folder content set in variable `folderWithMusic` in `folderContentEndpoint.js`). It can also play online radio stations.
 
 # Set up
 Create new folder for the application
@@ -9,22 +10,9 @@ and install dependencis
 
 `npm update`
 
-This application is using NGINX to serve static files. To install NGINX under Raspbian type
+Application should run on system boot, for example by using SYSTEMD service. Copy this file into 
+`/etc/systemd/system` as root.
 
-`sudo apt-get install nginx`
+Once this has been copied, you can attempt to start the service using the following command:
 
-Music files should be stored in `/var/www/music` folder.
-
-To configure NGINX go to `/etc/nginx` and remove content of `sites-enabled` folder. Next create new configuration file in `conf.d` folder (e.g. `my.conf`).
-Add following configuration to newly created file:
-
-    server {
-        listen 80;
-        root /var/www;
-        location /music {
-        }
-    }
-Server will be listening on port 80. If a URI of a requests ends with `/music` then NGINX will serve files from `/var/www/music` folder in the file system. It means that `location` is appended to `root` directive.
-
-More about NGINX and serving static file can be found [here](https://docs.nginx.com/nginx/admin-guide/web-server/serving-static-content/)
-
+`sudo systemctl start piPlayerSystemd.service`
