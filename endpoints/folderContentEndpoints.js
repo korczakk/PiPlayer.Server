@@ -1,13 +1,23 @@
 const { getDirectoryContent, isPathExists } = require('../folderOperations');
 
-const folderWithMusic = '/home/pi/Music/';
-//  const folderWithMusic = './';
+// const folderWithMusic = '/home/pi/Music/';
+const folderWithMusic = './';
 
 module.exports.getFolderContentEndpoints = (app) => {
-    app.get('/getFolderContent/:folderName?', (req, res) => {
-        const folderName = req.params.folderName;
-        
+    app.get('/getFolderContent/', (req, res) => {
+        const folderName = req.query.foldername;
+
+        if(RegExp(/(\.\.\/)|(~)|(\.\/)|(\.\.)/).test(folderName)) {
+            res.status(400).send({ "error": "Path is incorrect" });
+            return;
+        }
+
         const fullPath = folderName ? folderWithMusic + folderName : folderWithMusic;
+
+        if(fullPath.indexOf(folderWithMusic) == -1) {
+            res.status(400).send({ "error": "Path is incorrect" });
+            return;
+        }
     
         if(!isPathExists(fullPath)) {
             const statusMessage = `Folder "${folderName}" doesn't exist.`;
