@@ -1,9 +1,13 @@
+'use strict';
+
 const path = require('path');
 const fs = require('fs');
 const { hasUncaughtExceptionCaptureCallback } = require('process');
 
 function getDirectoryContent(path) {
-    const dir = fs.readdirSync(path, { withFileTypes: true});
+    
+    
+    const dir = fs.readdirSync(path, { withFileTypes: true}, );
 
     const dirContent = dir
         .filter(d => (!d.isDirectory() && d.name.toLowerCase().endsWith('.mp3')) || d.isDirectory())
@@ -27,7 +31,9 @@ function sortFolders(a, b) {
 }
 
 function writeToFile(path, data) {
-    fs.writeFileSync(path, data, err => console.log(err));
+    fs.writeFileSync(path, data, err => {
+        throw new Error(`Error when writting playlist. ${err}`);
+    });
 }
 
 exports.getDirectoryContent = getDirectoryContent;

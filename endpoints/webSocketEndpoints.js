@@ -121,6 +121,11 @@ function sendStatus(ws, playerState) {
 }
 
 function createPlaylist(path) {
+    const pathExists = folderOperations.isPathExists(path);
+    if (!pathExists) {
+        return;
+    }
+
     const filesInFolder = folderOperations
     .getDirectoryContent(path)
     .filter(x => !x.isFolder && !x.name.endsWith('.pls'))

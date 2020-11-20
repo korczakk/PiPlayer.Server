@@ -1,7 +1,9 @@
+'use strict';
+
 const { getDirectoryContent, isPathExists } = require('../folderOperations');
 
-const folderWithMusic = '/home/pi/Music';
-// const folderWithMusic = '/repos/PiPlayer.Server';
+// const folderWithMusic = '/home/pi/Music';
+const folderWithMusic = '/repos/PiPlayer.Server';
 
 module.exports.getFolderContentEndpoints = (app) => {
     app.get('/getFolderContent/', (req, res) => {
