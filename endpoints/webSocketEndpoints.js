@@ -41,14 +41,11 @@ module.exports.getWebSocketEndpoints = (wsServer) => {
                     });
                     break;
                 case "openFolder":
-                    const files = folderOperations.getDirectoryContent(messageContent.parameter)
-                        .map(f => `${f.path}/${f.name}`)
-                        .join(' ');
-
-                        mplayer.openFile(files, {
-                            cache: 128,
-                            cacheMin: 2
-                        });
+                    createPlaylist(messageContent.parameter);
+                    mplayer.openPlaylist(`${messageContent.parameter}/playlist.pls`, {
+                        cache: 128,
+                        cacheMin: 2
+                    });
                     playerState = { ...playerState, state: possibleStates.Starting, requestedState: possibleStates.Starting };
                     sendStatus(ws, playerState);
                     break;
@@ -121,4 +118,14 @@ module.exports.getWebSocketEndpoints = (wsServer) => {
 function sendStatus(ws, playerState) {
     const json = JSON.stringify(playerState);
     ws.send(json);
+}
+
+function createPlaylist(path) {
+    const filesInFolder = folderOperations
+    .getDirectoryContent(path)
+    .filter(x => !x.isFolder && !x.name.endsWith('.pls'))
+    .map(x => `${path}/${x.name}`)
+    .join('\n');
+    
+    folderOperations.writeToFile(`${path}/playlist.pls`, filesInFolder);
 }

@@ -1,7 +1,7 @@
 const { getDirectoryContent, isPathExists } = require('../folderOperations');
 
-// const folderWithMusic = '/home/pi/Music/';
-const folderWithMusic = 'd:\\repos\\PiPlayer.Server';
+const folderWithMusic = '/home/pi/Music';
+// const folderWithMusic = '/repos/PiPlayer.Server';
 
 module.exports.getFolderContentEndpoints = (app) => {
     app.get('/getFolderContent/', (req, res) => {
@@ -48,8 +48,16 @@ module.exports.getFolderContentEndpoints = (app) => {
             { name:'Calm Radio - Haydn', isFolder: false, radioUrl: 'http://streams.calmradio.com:7228/stream' },
             { name:'Calm Radio - Rossini', isFolder: false, radioUrl: 'http://streams.calmradio.com:14128/stream' },
             { name:'Calm Radio - Schubert', isFolder: false, radioUrl: 'http://streams.calmradio.com:8228/stream' },
-            { name:'Calm Radio - Solo piano', isFolder: false, radioUrl: 'http://streams.calmradio.com:1228/stream' }
-
+            { name:'Calm Radio - Solo piano', isFolder: false, radioUrl: 'http://streams.calmradio.com:1228/stream' },
+            { name:'Radio Cubana', isFolder: false, radioUrl: 'http://streamingV2.shoutcast.com/Radio-Cubana' },
+            { name:'Space', isFolder: false, radioUrl: 'http://mynoise5.radioca.st/stream' },
+            { name:'Pure piano', isFolder: false, radioUrl: 'http://listen.011fm.com:8042/stream22' },
+            { name:'SmoothLounge.com Global', isFolder: false, radioUrl: 'http://listen.011fm.com:8042/stream22/' },
+            { name:'Bird songs', isFolder: false, radioUrl: 'http://streaming.radio.co/s5c5da6a36/listen' },
+            { name:'Rain', isFolder: false, radioUrl: 'http://mynoise3.radioca.st/stream' },
+            { name:'Nature', isFolder: false, radioUrl: 'http://mynoise4.radioca.st/stream' }
+            
+            
         ];
 
         res.send(radioStations);

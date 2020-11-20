@@ -1,5 +1,6 @@
 const path = require('path');
 const fs = require('fs');
+const { hasUncaughtExceptionCaptureCallback } = require('process');
 
 function getDirectoryContent(path) {
     const dir = fs.readdirSync(path, { withFileTypes: true});
@@ -25,5 +26,10 @@ function sortFolders(a, b) {
     }
 }
 
+function writeToFile(path, data) {
+    fs.writeFileSync(path, data, err => console.log(err));
+}
+
 exports.getDirectoryContent = getDirectoryContent;
 exports.isPathExists = isPathExists;
+exports.writeToFile = writeToFile;
