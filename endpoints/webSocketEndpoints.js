@@ -1,6 +1,7 @@
 'use strict';
 
 const MPlayer = require('mplayer');
+const folderOperations = require('../folderOperations');
 const mplayer = new MPlayer();
 
 let playerState = {
@@ -38,6 +39,18 @@ module.exports.getWebSocketEndpoints = (wsServer) => {
                         cache: 128,
                         cacheMin: 2
                     });
+                    break;
+                case "openFolder":
+                    const files = folderOperations.getDirectoryContent(messageContent.parameter)
+                        .map(f => `${f.path}/${f.name}`)
+                        .join(' ');
+
+                        mplayer.openFile(files, {
+                            cache: 128,
+                            cacheMin: 2
+                        });
+                    playerState = { ...playerState, state: possibleStates.Starting, requestedState: possibleStates.Starting };
+                    sendStatus(ws, playerState);
                     break;
                 case "openPlaylist":
                     playerState = { ...playerState, state: possibleStates.Starting, requestedState: possibleStates.Starting };
@@ -107,5 +120,5 @@ module.exports.getWebSocketEndpoints = (wsServer) => {
 
 function sendStatus(ws, playerState) {
     const json = JSON.stringify(playerState);
-        ws.send(json);
+    ws.send(json);
 }

@@ -4,9 +4,11 @@ const fs = require('fs');
 function getDirectoryContent(path) {
     const dir = fs.readdirSync(path, { withFileTypes: true});
 
-    const dirContent = dir.map(d => {
-        return { name: d.name, isFolder: d.isDirectory(), path: path };
-     });
+    const dirContent = dir
+        .filter(d => (!d.isDirectory() && d.name.toLowerCase().endsWith('.mp3')) || d.isDirectory())
+        .map(d => {
+            return { name: d.name, isFolder: d.isDirectory(), path: path };
+        });
     return dirContent.sort((a, b) => sortFolders(a, b));
 }
 
