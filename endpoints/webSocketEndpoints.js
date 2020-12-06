@@ -87,14 +87,13 @@ module.exports.getWebSocketEndpoints = (wsServer) => {
             // ws.send(JSON.stringify({time: t}));
         })
         mplayer.on("status", (status) => {
-            playerState = { ...playerState, fileName: status.filename };
+            playerState = { ...playerState, fileName: status.filename, title: status.title };
         })
         mplayer.on("start", () => {
             playerState = { ...playerState, state: possibleStates.Started };
             sendStatus(ws, playerState);
         })
         mplayer.on("stop", () => {
-
             playerState = { ...playerState, state: possibleStates.Stoped };
             sendStatus(ws, playerState);
         })
