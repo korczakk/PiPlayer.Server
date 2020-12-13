@@ -6,6 +6,9 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const { getFolderContentEndpoints } = require('./endpoints/folderContentEndpoints');
 const { getWebSocketEndpoints } = require('./endpoints/webSocketEndpoints')
+const { readFromFile } = require('./folderOperations');
+
+const settings = JSON.parse(readFromFile('./settings.json'));
 
 // Server init
 const app = express();
@@ -18,7 +21,7 @@ const server = http.createServer(app);
 const wsServer = new websocket.Server({ server: server, path: '/ws' });
 
 // Declare endpoints
-getFolderContentEndpoints(app);
+getFolderContentEndpoints(app, settings);
 
 getWebSocketEndpoints(wsServer);
 
