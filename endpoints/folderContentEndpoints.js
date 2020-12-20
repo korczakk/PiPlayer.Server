@@ -15,8 +15,13 @@ module.exports.getFolderContentEndpoints = (app, settings) => {
             return;
         }
 
-        const fullPath = folderName ? folderWithMusic + folderName : folderWithMusic;
-
+        let fullPath = '';
+        if(!folderName || folderName === '/') {
+            fullPath = folderWithMusic;
+        } else {
+            fullPath = folderWithMusic + folderName;
+        }
+        
         if (fullPath.indexOf(folderWithMusic) == -1) {
             res.status(400).send({ "error": "Path is incorrect" });
             return;
