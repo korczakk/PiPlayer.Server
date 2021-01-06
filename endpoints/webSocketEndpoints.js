@@ -34,7 +34,7 @@ module.exports.getWebSocketEndpoints = (wsServer) => {
             switch (messageContent.command) {
                 case "openFile":
                     playerState = { ...playerState, state: possibleStates.Starting, requestedState: possibleStates.Starting };
-                    sendStatus(ws, playerState);
+                    //sendStatus(ws, playerState);
                     mplayer.openFile(messageContent.parameter, {
                         cache: 128,
                         cacheMin: 2
@@ -47,11 +47,11 @@ module.exports.getWebSocketEndpoints = (wsServer) => {
                         cacheMin: 2
                     });
                     playerState = { ...playerState, state: possibleStates.Starting, requestedState: possibleStates.Starting };
-                    sendStatus(ws, playerState);
+                    //sendStatus(ws, playerState);
                     break;
                 case "openPlaylist":
                     playerState = { ...playerState, state: possibleStates.Starting, requestedState: possibleStates.Starting };
-                    sendStatus(ws, playerState);
+                    //sendStatus(ws, playerState);
                     mplayer.openPlaylist(messageContent.parameter);
                     break;
                 case "play":
@@ -88,6 +88,10 @@ module.exports.getWebSocketEndpoints = (wsServer) => {
         })
         mplayer.on("status", (status) => {
             playerState = { ...playerState, fileName: status.filename, title: status.title };
+
+            if (playerState.title && playerState.fileName) {
+                sendStatus(ws, playerState);
+            }
         })
         mplayer.on("start", () => {
             playerState = { ...playerState, state: possibleStates.Started };
@@ -98,18 +102,13 @@ module.exports.getWebSocketEndpoints = (wsServer) => {
             sendStatus(ws, playerState);
         })
         mplayer.on("play", () => {
-            // if (playerState.state === possibleStates.Playing) {
-            //     return;
-            // }
             playerState = { ...playerState, state: possibleStates.Playing };
             sendStatus(ws, playerState);
         })
         mplayer.on("pause", () => {
-            // if (playerState.requestedState === playerState.state) {
-            //     return;
-            // }
             playerState = { ...playerState, state: possibleStates.Paused };
             sendStatus(ws, playerState);
+            
         })
     });
 }
@@ -126,10 +125,10 @@ function createPlaylist(path) {
     }
 
     const filesInFolder = folderOperations
-    .getDirectoryContent(path)
-    .filter(x => !x.isFolder && !x.name.endsWith('.pls'))
-    .map(x => `${path}/${x.name}`)
-    .join('\n');
-    
+        .getDirectoryContent(path)
+        .filter(x => !x.isFolder && !x.name.endsWith('.pls'))
+        .map(x => `${path}/${x.name}`)
+        .join('\n');
+
     folderOperations.writeToFile(`${path}/playlist.pls`, filesInFolder);
 }
