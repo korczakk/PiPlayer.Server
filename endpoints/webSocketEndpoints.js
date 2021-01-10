@@ -78,6 +78,9 @@ module.exports.getWebSocketEndpoints = (wsServer) => {
                 case "checkState":
                     sendStatus(ws, playerState);
                     break;
+                case "volume":
+                    mplayer.volume(messageContent.parameter);
+                    break;
             }
         });
 
