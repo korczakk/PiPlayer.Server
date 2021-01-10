@@ -1,6 +1,6 @@
 'use strict';
 
-const MPlayer = require('mplayer');
+const MPlayer = require('mPlayer');
 const folderOperations = require('../folderOperations');
 const mplayer = new MPlayer();
 
