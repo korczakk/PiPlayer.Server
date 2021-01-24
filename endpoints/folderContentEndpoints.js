@@ -73,4 +73,29 @@ module.exports.getFolderContentEndpoints = (app, settings) => {
             res.send();
         }
     });
+
+    app.delete('/netRadioStations', (req, res) => {
+        const radioStationToRemove = req.query.radioUrl;
+
+        if (!radioStationToRemove) {
+            res.status(400);
+            res.statusMessage('New radio station to remove was not provided.');
+            res.send();
+        }
+
+        try {
+            const readFile = readFromFile(netRadiosJsonFile);
+            let radioStations = readFile.length > 0 ? JSON.parse(readFile) : [];
+            
+            const radioStationsAfterRemoval = radioStations.filter(x => x.radioUrl !== radioStationToRemove);
+            writeToFile(netRadiosJsonFile, JSON.stringify(radioStationsAfterRemoval));
+
+            res.send(radioStationsAfterRemoval);
+        } catch (error) {
+            res.status(500);
+            res.statusMessage = 'Could not remove radio station.';
+            res.send();
+        }
+
+    });
 }
