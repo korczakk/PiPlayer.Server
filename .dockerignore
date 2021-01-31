@@ -1,0 +1,10 @@
+node_modules
+npm-debug.log
+Assets
+MP3
+.vscode
+.git
+.gitignore
+piPlayerSystemd.service
+settings.json
+README.md
